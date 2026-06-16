@@ -9,14 +9,29 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import * as THREE from "three";
 
-// 1. Navigation Bar (Drawer Menu, Left-Aligned, Closes on Scroll)
+// 1. Navigation Bar (Smart Scroll-to-Close)
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const scrollToSection = (id: string) => {
-    // Small timeout ensures the click registers fully before closing the menu
-    setTimeout(() => setIsOpen(false), 100);
+  // Smart Scroll Listener - Ignores tapping wiggles, only closes on actual scroll
+  useEffect(() => {
+    if (!isOpen) return;
 
+    const initialScrollY = window.scrollY;
+
+    const handleScroll = () => {
+      // Only close the menu if the user scrolls more than 40px
+      if (Math.abs(window.scrollY - initialScrollY) > 40) {
+        setIsOpen(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isOpen]);
+
+  const scrollToSection = (id: string) => {
+    setIsOpen(false);
     if (id === "top") {
       window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
@@ -30,7 +45,6 @@ const Navbar = () => {
   return (
     <nav className="fixed top-0 w-full z-50 bg-[#050505]/80 backdrop-blur-md border-b border-white/5 transition-all duration-300">
       <div className="px-6 md:px-12 py-6 flex justify-between items-center relative z-50">
-        {/* Updated Logo Text */}
         <div
           onClick={() => scrollToSection("top")}
           className="text-white text-lg tracking-[0.2em] uppercase font-light cursor-pointer"
@@ -81,7 +95,6 @@ const Navbar = () => {
         </button>
       </div>
 
-      {/* Mobile Menu Drawer */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -411,8 +424,8 @@ export default function App() {
     <div className="bg-[#050505] text-white font-sans selection:bg-white selection:text-black">
       <Navbar />
 
-      {/* SECTION 1: HERO (Mobile Height Adjusted) */}
-      <section className="relative w-screen min-h-[75vh] md:h-screen flex items-center justify-center overflow-hidden pt-24 md:pt-0">
+      {/* SECTION 1: HERO (Dynamic Viewport Height for perfectly framed mobile view) */}
+      <section className="relative w-screen h-[100dvh] flex items-center justify-center overflow-hidden">
         {/* 3D Canvas Layer - Safely Hidden on Mobile */}
         {!isMobile && (
           <div className="absolute inset-0 z-0 hidden md:block">
@@ -423,7 +436,7 @@ export default function App() {
           </div>
         )}
 
-        <div className="relative z-10 w-full flex flex-col justify-center px-8 md:px-24 pointer-events-none">
+        <div className="relative z-10 w-full flex flex-col justify-center px-8 md:px-24 pointer-events-none mt-10 md:mt-0">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
