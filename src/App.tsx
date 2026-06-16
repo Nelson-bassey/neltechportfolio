@@ -9,7 +9,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import * as THREE from "three";
 
-// 1. Navigation Bar (Optimized for Mobile Touch)
+// 1. Navigation Bar (Drawer Menu, Left-Aligned, Closes on Scroll)
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -30,11 +30,12 @@ const Navbar = () => {
   return (
     <nav className="fixed top-0 w-full z-50 bg-[#050505]/80 backdrop-blur-md border-b border-white/5 transition-all duration-300">
       <div className="px-6 md:px-12 py-6 flex justify-between items-center relative z-50">
+        {/* Updated Logo Text */}
         <div
           onClick={() => scrollToSection("top")}
-          className="text-white text-lg tracking-[0.3em] uppercase font-light cursor-pointer"
+          className="text-white text-lg tracking-[0.2em] uppercase font-light cursor-pointer"
         >
-          NB.
+          NELSON
         </div>
 
         <div className="hidden md:flex gap-8 text-xs tracking-widest uppercase text-gray-400">
@@ -80,7 +81,7 @@ const Navbar = () => {
         </button>
       </div>
 
-      {/* Mobile Menu Drawer - Absolute positioned to fix scrolling bugs */}
+      {/* Mobile Menu Drawer */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -193,7 +194,7 @@ const CinematicLighting = () => (
   </>
 );
 
-// 4. About Section (Mobile Whitespace Fixed)
+// 4. About Section
 const AboutSection = () => {
   return (
     <section
@@ -248,7 +249,7 @@ const AboutSection = () => {
   );
 };
 
-// 5. Contact & Footer Section (Mobile Whitespace Fixed)
+// 5. Contact & Footer Section
 const ContactFooter = () => {
   const whatsappMessage = encodeURIComponent(
     "Hi Nelson, I just explored your portfolio and I'm interested in elevating my brand's digital presence. Let's talk!",
@@ -410,8 +411,8 @@ export default function App() {
     <div className="bg-[#050505] text-white font-sans selection:bg-white selection:text-black">
       <Navbar />
 
-      {/* SECTION 1: HERO */}
-      <section className="relative w-screen h-screen overflow-hidden">
+      {/* SECTION 1: HERO (Mobile Height Adjusted) */}
+      <section className="relative w-screen min-h-[75vh] md:h-screen flex items-center justify-center overflow-hidden pt-24 md:pt-0">
         {/* 3D Canvas Layer - Safely Hidden on Mobile */}
         {!isMobile && (
           <div className="absolute inset-0 z-0 hidden md:block">
@@ -422,7 +423,7 @@ export default function App() {
           </div>
         )}
 
-        <div className="absolute inset-0 z-10 flex flex-col justify-center px-8 md:px-24 pointer-events-none">
+        <div className="relative z-10 w-full flex flex-col justify-center px-8 md:px-24 pointer-events-none">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -487,10 +488,10 @@ export default function App() {
         </div>
       </section>
 
-      {/* SECTION 2: ABOUT (Mobile Whitespace Fixed) */}
+      {/* SECTION 2: ABOUT */}
       <AboutSection />
 
-      {/* SECTION 3: CASE STUDIES (Mobile Whitespace Fixed) */}
+      {/* SECTION 3: CASE STUDIES */}
       <section
         id="work"
         className="py-16 md:py-32 px-8 md:px-24 max-w-7xl mx-auto border-t border-white/5"
