@@ -9,9 +9,22 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import * as THREE from "three";
 
-// 1. Navigation Bar
+// 1. Navigation Bar (Drawer Menu, Left-Aligned, Closes on Scroll)
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+
+  // Function to close menu on scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      if (isOpen) {
+        setIsOpen(false);
+      }
+    };
+
+    // Listen for scroll events when the menu is open
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isOpen]);
 
   const scrollToSection = (id: string) => {
     setIsOpen(false);
@@ -22,45 +35,48 @@ const Navbar = () => {
     }
   };
 
+  const navLinkClass =
+    "relative pb-1 hover:text-white transition-colors cursor-pointer after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-0 hover:after:w-full after:bg-white after:transition-all after:duration-300";
+
   return (
-    <>
-      <nav className="fixed top-0 w-full z-50 px-6 md:px-12 py-6 flex justify-between items-center bg-black/40 backdrop-blur-md border-b border-white/5">
+    <nav className="fixed top-0 w-full z-50 bg-[#050505]/80 backdrop-blur-md border-b border-white/5 transition-all duration-300">
+      <div className="px-6 md:px-12 py-6 flex justify-between items-center relative z-50">
         <div
           onClick={() => scrollToSection("top")}
-          className="text-white text-lg tracking-[0.3em] uppercase font-light cursor-pointer z-50"
+          className="text-white text-lg tracking-[0.3em] uppercase font-light cursor-pointer"
         >
-          Neltech
+          Nelson
         </div>
 
         <div className="hidden md:flex gap-8 text-xs tracking-widest uppercase text-gray-400">
           <button
             onClick={() => scrollToSection("top")}
-            className="hover:text-white transition-colors cursor-pointer"
+            className={navLinkClass}
           >
             Home
           </button>
           <button
             onClick={() => scrollToSection("about")}
-            className="hover:text-white transition-colors cursor-pointer"
+            className={navLinkClass}
           >
             About
           </button>
           <button
             onClick={() => scrollToSection("work")}
-            className="hover:text-white transition-colors cursor-pointer"
+            className={navLinkClass}
           >
             Work
           </button>
           <button
             onClick={() => scrollToSection("contact")}
-            className="hover:text-white transition-colors cursor-pointer"
+            className={navLinkClass}
           >
             Engage
           </button>
         </div>
 
         <button
-          className="md:hidden relative w-10 h-10 z-50 flex items-center justify-center cursor-pointer"
+          className="md:hidden relative w-10 h-10 flex items-center justify-center cursor-pointer"
           onClick={() => setIsOpen(!isOpen)}
         >
           <span
@@ -73,45 +89,48 @@ const Navbar = () => {
             className={`absolute w-6 h-[1.5px] bg-white transition-all duration-300 ease-out ${isOpen ? "-rotate-45" : "translate-y-2"}`}
           ></span>
         </button>
-      </nav>
+      </div>
 
+      {/* Mobile Menu Drawer - Not full screen, left aligned */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 bg-[#050505]/95 backdrop-blur-xl z-40 flex flex-col items-center justify-center gap-10 md:hidden"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="md:hidden overflow-hidden bg-[#050505]/95 backdrop-blur-xl border-t border-white/5"
           >
-            <button
-              onClick={() => scrollToSection("top")}
-              className="text-white text-2xl tracking-[0.2em] uppercase font-light"
-            >
-              System
-            </button>
-            <button
-              onClick={() => scrollToSection("about")}
-              className="text-white text-2xl tracking-[0.2em] uppercase font-light"
-            >
-              About
-            </button>
-            <button
-              onClick={() => scrollToSection("work")}
-              className="text-white text-2xl tracking-[0.2em] uppercase font-light"
-            >
-              Work
-            </button>
-            <button
-              onClick={() => scrollToSection("contact")}
-              className="text-white text-2xl tracking-[0.2em] uppercase font-light"
-            >
-              Engage
-            </button>
+            <div className="flex flex-col items-start px-6 pt-4 pb-8 gap-8">
+              <button
+                onClick={() => scrollToSection("top")}
+                className="text-white text-xl tracking-[0.2em] uppercase font-light w-full text-left"
+              >
+                Home
+              </button>
+              <button
+                onClick={() => scrollToSection("about")}
+                className="text-white text-xl tracking-[0.2em] uppercase font-light w-full text-left"
+              >
+                About
+              </button>
+              <button
+                onClick={() => scrollToSection("work")}
+                className="text-white text-xl tracking-[0.2em] uppercase font-light w-full text-left"
+              >
+                Work
+              </button>
+              <button
+                onClick={() => scrollToSection("contact")}
+                className="text-white text-xl tracking-[0.2em] uppercase font-light w-full text-left"
+              >
+                Engage
+              </button>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </>
+    </nav>
   );
 };
 
@@ -140,11 +159,7 @@ const MetallicCore = ({ isMobile }: { isMobile: boolean }) => {
 
   return (
     <Float speed={1.2} rotationIntensity={0.3} floatIntensity={0.8}>
-      <mesh
-        ref={meshRef}
-        position={isMobile ? [0, -1, 0] : [2.0, 0, 0]}
-        scale={isMobile ? 0.8 : 1}
-      >
+      <mesh ref={meshRef} position={[2.0, 0, 0]} scale={1}>
         <torusKnotGeometry args={[1, 0.3, 256, 64]} />
         <meshStandardMaterial
           color="#ffffff"
@@ -194,7 +209,7 @@ const AboutSection = () => {
   return (
     <section
       id="about"
-      className="py-24 md:py-32 px-8 md:px-24 max-w-7xl mx-auto border-t border-white/5 flex flex-col md:flex-row items-center gap-16"
+      className="py-24 md:py-32 px-8 md:px-24 max-w-7xl mx-auto border-t border-white/5 flex flex-col md:flex-row items-center gap-16 pt-32"
     >
       <motion.div
         initial={{ opacity: 0, y: 40, scale: 0.95 }}
@@ -298,11 +313,11 @@ const ContactFooter = () => {
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 1, delay: 0.3 }}
-        className="w-full flex flex-col md:flex-row justify-between items-center pt-8 border-t border-white/5 text-[10px] text-gray-500 uppercase tracking-widest font-mono gap-6 md:gap-0"
+        className="w-full flex flex-col lg:flex-row justify-between items-center pt-8 border-t border-white/5 text-[10px] text-gray-500 uppercase tracking-widest font-mono gap-6 lg:gap-0"
       >
         <p>© {new Date().getFullYear()} Nelson Bassey. All rights reserved.</p>
 
-        <div className="flex gap-6 items-center">
+        <div className="flex flex-wrap justify-center gap-4 md:gap-6 items-center">
           <a
             href="#"
             className="text-gray-500 hover:text-white transition-colors cursor-pointer"
@@ -337,6 +352,24 @@ const ContactFooter = () => {
           >
             <svg fill="currentColor" viewBox="0 0 24 24" className="w-5 h-5">
               <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z" />
+            </svg>
+          </a>
+          <a
+            href="#"
+            className="text-gray-500 hover:text-white transition-colors cursor-pointer"
+            aria-label="Instagram"
+          >
+            <svg fill="currentColor" viewBox="0 0 24 24" className="w-5 h-5">
+              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.88z" />
+            </svg>
+          </a>
+          <a
+            href="#"
+            className="text-gray-500 hover:text-white transition-colors cursor-pointer"
+            aria-label="TikTok"
+          >
+            <svg fill="currentColor" viewBox="0 0 24 24" className="w-5 h-5">
+              <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93v7.2c0 1.96-.5 3.96-1.6 5.58-1.14 1.67-2.91 2.8-4.89 3.12-1.92.32-3.95.12-5.74-.69-1.74-.79-3.14-2.18-3.93-3.88-.81-1.76-1.02-3.79-.6-5.69.42-1.89 1.48-3.56 2.97-4.73 1.44-1.13 3.3-1.71 5.12-1.68.22 0 .43.01.65.02v4.01c-.13 0-.25-.01-.38-.01-1.02-.02-2.06.28-2.89.87-.85.61-1.42 1.52-1.62 2.54-.2 1.02-.05 2.1.4 3.01.44.89 1.2 1.61 2.1 2 1.02.43 2.22.48 3.27.15 1.06-.34 1.96-1.08 2.47-2.05.47-.9.65-1.94.62-2.95V.02h-.03z" />
             </svg>
           </a>
         </div>
@@ -390,13 +423,17 @@ export default function App() {
 
       {/* SECTION 1: HERO */}
       <section className="relative w-screen h-screen overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <Canvas camera={{ position: [0, 0, 6], fov: 45 }}>
-            <CinematicLighting />
-            <MetallicCore isMobile={isMobile} />
-          </Canvas>
-        </div>
-        <div className="absolute inset-0 z-10 flex flex-col justify-center px-8 md:px-24 pointer-events-none">
+        {/* 3D Canvas Layer - Safely Hidden on Mobile */}
+        {!isMobile && (
+          <div className="absolute inset-0 z-0 hidden md:block">
+            <Canvas camera={{ position: [0, 0, 6], fov: 45 }}>
+              <CinematicLighting />
+              <MetallicCore isMobile={false} />
+            </Canvas>
+          </div>
+        )}
+
+        <div className="absolute inset-0 z-10 flex flex-col justify-center px-8 md:px-24 pointer-events-none mt-16 md:mt-0">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -422,7 +459,7 @@ export default function App() {
             transition={{ duration: 1.2, delay: 0.6, ease: "easeOut" }}
             className="max-w-md lg:max-w-xl"
           >
-            <p className="text-gray-300 text-base md:text-lg leading-relaxed mb-8 font-light">
+            <p className="text-gray-300 text-base md:text-lg leading-relaxed mb-8 font-light pointer-events-auto">
               Many businesses settle for generic websites that cost them
               credibility and customers. I build the exact opposite. By blending
               cinematic design with robust engineering, I create premium digital
@@ -522,7 +559,6 @@ export default function App() {
                   ))}
                 </div>
 
-                {/* NEW EXPLICIT LINK AREA */}
                 <div className="pt-6 border-t border-white/5 group-hover:border-white/20 transition-colors duration-500">
                   <a
                     href={project.link}
