@@ -9,25 +9,14 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import * as THREE from "three";
 
-// 1. Navigation Bar (Drawer Menu, Left-Aligned, Closes on Scroll)
+// 1. Navigation Bar (Optimized for Mobile Touch)
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
-  // Function to close menu on scroll
-  useEffect(() => {
-    const handleScroll = () => {
-      if (isOpen) {
-        setIsOpen(false);
-      }
-    };
-
-    // Listen for scroll events when the menu is open
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [isOpen]);
-
   const scrollToSection = (id: string) => {
-    setIsOpen(false);
+    // Small timeout ensures the click registers fully before closing the menu
+    setTimeout(() => setIsOpen(false), 100);
+
     if (id === "top") {
       window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
@@ -45,7 +34,7 @@ const Navbar = () => {
           onClick={() => scrollToSection("top")}
           className="text-white text-lg tracking-[0.3em] uppercase font-light cursor-pointer"
         >
-          Nelson
+          NB.
         </div>
 
         <div className="hidden md:flex gap-8 text-xs tracking-widest uppercase text-gray-400">
@@ -91,15 +80,15 @@ const Navbar = () => {
         </button>
       </div>
 
-      {/* Mobile Menu Drawer - Not full screen, left aligned */}
+      {/* Mobile Menu Drawer - Absolute positioned to fix scrolling bugs */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="md:hidden overflow-hidden bg-[#050505]/95 backdrop-blur-xl border-t border-white/5"
+            className="absolute top-full left-0 w-full md:hidden overflow-hidden bg-[#050505]/95 backdrop-blur-xl border-b border-white/5 shadow-2xl"
           >
             <div className="flex flex-col items-start px-6 pt-4 pb-8 gap-8">
               <button
@@ -138,11 +127,11 @@ const Navbar = () => {
 const MetallicCore = ({ isMobile }: { isMobile: boolean }) => {
   const meshRef = useRef<THREE.Mesh>(null);
 
-  useFrame((state, delta) => {
+  useFrame((_state, delta) => {
     if (meshRef.current) {
       meshRef.current.rotation.y += delta * 0.1;
-      const targetRotationX = state.pointer.y * 0.4;
-      const targetRotationY = (isMobile ? 0 : 2.0) + state.pointer.x * 0.4;
+      const targetRotationX = _state.pointer.y * 0.4;
+      const targetRotationY = (isMobile ? 0 : 2.0) + _state.pointer.x * 0.4;
 
       meshRef.current.rotation.x = THREE.MathUtils.lerp(
         meshRef.current.rotation.x,
@@ -204,12 +193,12 @@ const CinematicLighting = () => (
   </>
 );
 
-// 4. About Section
+// 4. About Section (Mobile Whitespace Fixed)
 const AboutSection = () => {
   return (
     <section
       id="about"
-      className="py-24 md:py-32 px-8 md:px-24 max-w-7xl mx-auto border-t border-white/5 flex flex-col md:flex-row items-center gap-16 pt-32"
+      className="py-16 md:py-32 px-8 md:px-24 max-w-7xl mx-auto border-t border-white/5 flex flex-col md:flex-row items-center gap-12 md:gap-16"
     >
       <motion.div
         initial={{ opacity: 0, y: 40, scale: 0.95 }}
@@ -259,7 +248,7 @@ const AboutSection = () => {
   );
 };
 
-// 5. Contact & Footer Section
+// 5. Contact & Footer Section (Mobile Whitespace Fixed)
 const ContactFooter = () => {
   const whatsappMessage = encodeURIComponent(
     "Hi Nelson, I just explored your portfolio and I'm interested in elevating my brand's digital presence. Let's talk!",
@@ -269,7 +258,7 @@ const ContactFooter = () => {
   return (
     <section
       id="contact"
-      className="relative py-24 md:py-32 px-8 md:px-24 max-w-7xl mx-auto flex flex-col items-center justify-center text-center"
+      className="relative py-16 md:py-32 px-8 md:px-24 max-w-7xl mx-auto flex flex-col items-center justify-center text-center"
     >
       <motion.div
         initial={{ opacity: 0, y: 40 }}
@@ -290,7 +279,7 @@ const ContactFooter = () => {
           connect, my inbox is always open.
         </p>
 
-        <div className="flex flex-col md:flex-row gap-4 justify-center mb-16 md:mb-24 w-full px-4 md:px-0">
+        <div className="flex flex-col md:flex-row gap-4 justify-center mb-16 w-full px-4 md:px-0">
           <a
             href="mailto:hello@nelsonbassey.com"
             className="w-full md:w-auto px-10 py-5 bg-white text-black text-[10px] md:text-xs uppercase tracking-widest hover:bg-gray-200 transition-colors duration-300 font-medium"
@@ -433,7 +422,7 @@ export default function App() {
           </div>
         )}
 
-        <div className="absolute inset-0 z-10 flex flex-col justify-center px-8 md:px-24 pointer-events-none mt-16 md:mt-0">
+        <div className="absolute inset-0 z-10 flex flex-col justify-center px-8 md:px-24 pointer-events-none">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -498,13 +487,13 @@ export default function App() {
         </div>
       </section>
 
-      {/* SECTION 2: ABOUT */}
+      {/* SECTION 2: ABOUT (Mobile Whitespace Fixed) */}
       <AboutSection />
 
-      {/* SECTION 3: CASE STUDIES */}
+      {/* SECTION 3: CASE STUDIES (Mobile Whitespace Fixed) */}
       <section
         id="work"
-        className="py-24 md:py-32 px-8 md:px-24 max-w-7xl mx-auto border-t border-white/5"
+        className="py-16 md:py-32 px-8 md:px-24 max-w-7xl mx-auto border-t border-white/5"
       >
         <motion.div
           initial={{ opacity: 0, y: 40 }}
