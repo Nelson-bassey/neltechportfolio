@@ -322,8 +322,10 @@ const ContactFooter = () => {
 
         <div className="flex flex-wrap justify-center gap-4 md:gap-6 items-center">
           <a
-            href="#"
-            className="text-gray-500 hover:text-white transition-colors cursor-pointer"
+            href="https://github.com/Nelson-bassey"
+            target="_blank" 
+            rel="noreferrer"
+            className="text-gray-500 hover:text-white transition-colors cursor-pointer" //github.com/Nelson-bassey
             aria-label="GitHub"
           >
             <svg fill="currentColor" viewBox="0 0 24 24" className="w-5 h-5">
@@ -331,7 +333,9 @@ const ContactFooter = () => {
             </svg>
           </a>
           <a
-            href="#"
+            href="https://www.linkedin.com/in/nelson-bassey-384990287"
+            target="_blank"
+            rel="noreferrer"
             className="text-gray-500 hover:text-white transition-colors cursor-pointer"
             aria-label="LinkedIn"
           >
@@ -340,7 +344,9 @@ const ContactFooter = () => {
             </svg>
           </a>
           <a
-            href="#"
+            href="https://x.com/cloudify510"
+            target="_blank"
+            rel="noreferrer"
             className="text-gray-500 hover:text-white transition-colors cursor-pointer"
             aria-label="Twitter"
           >
@@ -349,7 +355,9 @@ const ContactFooter = () => {
             </svg>
           </a>
           <a
-            href="#"
+            href="https://www.facebook.com/profile.php?id=615894755093"
+            target="_blank"
+            rel="noreferrer"
             className="text-gray-500 hover:text-white transition-colors cursor-pointer"
             aria-label="Facebook"
           >
@@ -358,7 +366,9 @@ const ContactFooter = () => {
             </svg>
           </a>
           <a
-            href="#"
+            href="https://www.instagram.com/basseynelsonita?igsh=MXFyYXd3M2M1cHJ2eA=="
+            target="_blank"
+            rel="noreferrer"
             className="text-gray-500 hover:text-white transition-colors cursor-pointer"
             aria-label="Instagram"
           >
@@ -367,7 +377,9 @@ const ContactFooter = () => {
             </svg>
           </a>
           <a
-            href="#"
+            href="https://www.tiktok.com/@nelson_detechguy?_r=1&_t=ZS-97VePb9Xpn"
+            target="_blank"
+            rel="noreferrer"
             className="text-gray-500 hover:text-white transition-colors cursor-pointer"
             aria-label="TikTok"
           >
@@ -397,7 +409,7 @@ const PROJECTS = [
     description:
       "A high-performance digital storefront featuring dynamic cart selection and a seamless WhatsApp-based checkout integration.",
     tags: ["JavaScript", "Firebase", "HTML/CSS", "API Integration"],
-    link: "https://github.com/your-username",
+    link: "https://bosco-gadgets.vercel.app/",
   },
   {
     title: "EJEBE KITCHEN Gallery Engine",
@@ -405,7 +417,7 @@ const PROJECTS = [
     description:
       "A premium, conversion-focused product showcase boasting fluid animations, custom interfaces, and a sophisticated minimalist aesthetic.",
     tags: ["Vanilla JS", "UI/UX Design", "Performance Optimization"],
-    link: "https://github.com/your-username",
+    link: "https://ejebe-kitchen.vercel.app/",
   },
 ];
 
@@ -598,3 +610,4 @@ export default function App() {
     </div>
   );
 }
+ 
